@@ -55,6 +55,7 @@ Resources:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-VPC
+    DeletionPolicy: Retain
   Subnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
@@ -63,17 +64,20 @@ Resources:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-Subnet
+    DeletionPolicy: Retain
   InternetGateway:
     Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-InternetGateway
+    DeletionPolicy: Retain
   VPCGatewayAttachment:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
+    DeletionPolicy: Retain
   RouteTable:
     Type: 'AWS::EC2::RouteTable'
     Properties:
@@ -81,17 +85,20 @@ Resources:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-RouteTable
+    DeletionPolicy: Retain
   SubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref Subnet
+    DeletionPolicy: Retain
   InternetGatewayRoute:
     Type: 'AWS::EC2::Route'
     Properties:
       RouteTableId: !Ref RouteTable
       GatewayId: !Ref InternetGateway
       DestinationCidrBlock: 0.0.0.0/0
+    DeletionPolicy: Retain
   SecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -111,6 +118,7 @@ Resources:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-SecurityGroup
+    DeletionPolicy: Retain
   EC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -130,12 +138,14 @@ Resources:
       Tags:
         - Key: Name
           Value: VPCE-Tutorial-EC2Instance
+    DeletionPolicy: Retain
   EC2InstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
       Roles:
         - !Ref EC2InstanceRole
       InstanceProfileName: EC2InstanceProfile
+    DeletionPolicy: Retain
   EC2InstanceRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -149,6 +159,7 @@ Resources:
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/AmazonSNSFullAccess'
+    DeletionPolicy: Retain
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -161,6 +172,7 @@ Resources:
           Action: 'sts:AssumeRole'
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+    DeletionPolicy: Retain
   LambdaFunction1:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -180,6 +192,7 @@ Resources:
         - Arn
       Runtime: python3.9
       Timeout: '3'
+    DeletionPolicy: Retain
   LambdaPermission1:
     Type: 'AWS::Lambda::Permission'
     Properties:
@@ -187,11 +200,13 @@ Resources:
       FunctionName: !Ref LambdaFunction1
       Principal: sns.amazonaws.com
       SourceArn: !Ref SNSTopic
+    DeletionPolicy: Retain
   LambdaLogGroup1:
     Type: 'AWS::Logs::LogGroup'
     Properties:
       LogGroupName: !Sub "/aws/lambda/${LambdaFunction1}"
       RetentionInDays: '7'
+    DeletionPolicy: Retain
   LambdaFunction2:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -211,6 +226,7 @@ Resources:
         - Arn
       Runtime: python3.9
       Timeout: '3'
+    DeletionPolicy: Retain
   LambdaPermission2:
     Type: 'AWS::Lambda::Permission'
     Properties:
@@ -218,11 +234,13 @@ Resources:
       FunctionName: !Ref LambdaFunction2
       Principal: sns.amazonaws.com
       SourceArn: !Ref SNSTopic
+    DeletionPolicy: Retain
   LambdaLogGroup2:
     Type: 'AWS::Logs::LogGroup'
     Properties:
       LogGroupName: !Sub "/aws/lambda/${LambdaFunction2}"
       RetentionInDays: '7'
+    DeletionPolicy: Retain
   SNSTopic:
     Type: 'AWS::SNS::Topic'
     Properties:
@@ -237,3 +255,4 @@ Resources:
             - LambdaFunction2
             - Arn
           Protocol: lambda
+    DeletionPolicy: Retain
